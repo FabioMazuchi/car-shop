@@ -12,8 +12,11 @@ describe('Car Service', () => {
 	const carService = new CarService(carModel);
 
   before(async () => {
-    sinon.stub(Model, 'create').resolves(carMockId);
-		sinon.stub(Model, 'find').resolves(allCarMock);
+    sinon.stub(carModel, 'create').resolves(carMockId);
+		sinon.stub(carModel, 'read').resolves(allCarMock);
+		sinon.stub(carModel, 'readOne')
+		.onCall(0).resolves(carMockId)
+		.onCall(1).resolves(null);
   });
 
   after(()=>{
@@ -22,7 +25,7 @@ describe('Car Service', () => {
 
   describe("Create Car", () => {
     it("success", async () => {
-			const newCar = await carModel.create(carMock);
+			const newCar = await carService.create(carMock);
 			expect(newCar).to.be.deep.equal(carMockId);
 		});
 
@@ -37,9 +40,31 @@ describe('Car Service', () => {
 
 	describe("Read Car", () => {
     it("success", async () => {
-			const cars = await carModel.read();
+			const cars = await carService.read();
 			expect(cars).to.be.deep.equal(allCarMock);
 		});
   });
 
+	describe("ReadOne Car", () => {
+    it("success", async () => {
+			const car = await carService.readOne('62cf1fc6498565d94eba52cd');
+			expect(car).to.be.deep.equal(carMockId);
+		});
+
+		it("failure _id lenth 24 characters", async () => {
+			try {
+				await carService.readOne('idLenthErro');
+			} catch (error: any) {
+				expect(error.message).to.be.eq('IdLenth');
+			}
+		});
+
+		it("failure _id not found ", async () => {
+			try {
+				await carService.readOne('62cf1fc6498565d94eba52cd');
+			} catch (error: any) {
+				expect(error.message).to.be.eq('NotFound');
+			}
+		});
+  });
 });
