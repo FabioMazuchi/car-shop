@@ -5,6 +5,12 @@ import { IService } from '../interfaces/IService';
 class CarController {
   constructor(private _service: IService<ICar>) {}
 
+  async readOne(req: Request, res: Response<ICar>) {
+    const car = await this._service.readOne(req.params.id);
+  
+    return res.status(200).json(car);
+  }
+
   async read(req: Request, res: Response<ICar[]>) {
     const result = await this._service.read();
   
