@@ -1,7 +1,7 @@
 import * as sinon from 'sinon';
 import chai from 'chai';
 import { Model } from 'mongoose';
-import { carMock, carMockId } from '../../mocks/carMock';
+import { allCarMock, carMock, carMockId } from '../../mocks/carMock';
 import CarModel from '../../../models/CarModel';
 import CarService from '../../../services/CarService';
 import { ZodError } from 'zod';
@@ -13,6 +13,7 @@ describe('Car Service', () => {
 
   before(async () => {
     sinon.stub(Model, 'create').resolves(carMockId);
+		sinon.stub(Model, 'find').resolves(allCarMock);
   });
 
   after(()=>{
@@ -31,6 +32,13 @@ describe('Car Service', () => {
 			} catch (error) {
 				expect(error).to.be.instanceOf(ZodError);
 			}
+		});
+  });
+
+	describe("Read Car", () => {
+    it("success", async () => {
+			const cars = await carModel.read();
+			expect(cars).to.be.deep.equal(allCarMock);
 		});
   });
 
