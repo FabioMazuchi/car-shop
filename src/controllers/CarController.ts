@@ -5,6 +5,12 @@ import { IService } from '../interfaces/IService';
 class CarController {
   constructor(private _service: IService<ICar>) {}
 
+  async read(req: Request, res: Response<ICar[]>) {
+    const result = await this._service.read();
+  
+    return res.status(200).json(result);
+  }
+
   async create(req: Request & { body: ICar }, res: Response<ICar>) {
     const { model, year, color, buyValue, seatsQty, doorsQty } = req.body;
     const car = { model, year, color, buyValue, seatsQty, doorsQty };
