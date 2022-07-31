@@ -1,7 +1,7 @@
 import * as sinon from 'sinon';
 import chai from 'chai';
 import { Model } from 'mongoose';
-import { allCarMock, carMock, carMockId } from '../../mocks/carMock';
+import { allCarMock, carMock, carMockForChange, carMockForChangeId, carMockId } from '../../mocks/carMock';
 import CarModel from '../../../models/CarModel';
 import CarService from '../../../services/CarService';
 import { ZodError } from 'zod';
@@ -14,9 +14,11 @@ describe('Car Service', () => {
   before(async () => {
     sinon.stub(carModel, 'create').resolves(carMockId);
 		sinon.stub(carModel, 'read').resolves(allCarMock);
+		sinon.stub(carModel, 'update').resolves(carMockForChangeId);
 		sinon.stub(carModel, 'readOne')
 		.onCall(0).resolves(carMockId)
-		.onCall(1).resolves(null);
+		.onCall(1).resolves(null)
+		.onCall(2).resolves(carMockId)
   });
 
   after(()=>{
@@ -65,6 +67,13 @@ describe('Car Service', () => {
 			} catch (error: any) {
 				expect(error.message).to.be.eq('NotFound');
 			}
+		});
+  });
+
+	describe("Update Car", () => {
+    it("success", async () => {
+			const carUpdated = await carService.update('62cf1fc6498565d94eba52cd', carMockForChange);
+			expect(carUpdated).to.be.deep.equal(carMockForChangeId);
 		});
   });
 });

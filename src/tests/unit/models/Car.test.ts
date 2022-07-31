@@ -1,7 +1,7 @@
 import * as sinon from "sinon";
 import chai from "chai";
 import { Model } from "mongoose";
-import { allCarMock, carMock, carMockId } from "../../mocks/carMock";
+import { allCarMock, carMock, carMockForChange, carMockForChangeId, carMockId } from "../../mocks/carMock";
 import CarModel from '../../../models/CarModel';
 const { expect } = chai;
 
@@ -12,6 +12,7 @@ describe("Car Model", () => {
     sinon.stub(Model, "create").resolves(carMockId);
     sinon.stub(Model, 'find').resolves(allCarMock);
     sinon.stub(Model, 'findOne').resolves(carMockId);
+    sinon.stub(Model, 'findByIdAndUpdate').resolves(carMockForChangeId);
   });
 
   after(() => {
@@ -36,6 +37,13 @@ describe("Car Model", () => {
     it("success", async () => {
 			const car = await carModel.readOne('62cf1fc6498565d94eba52cd');
 			expect(car).to.be.deep.equal(carMockId);
+		});
+  });
+
+  describe("Update Car", () => {
+    it("success", async () => {
+			const carUpdated = await carModel.update('62cf1fc6498565d94eba52cd', carMockForChange);
+			expect(carUpdated).to.be.deep.equal(carMockForChangeId);
 		});
   });
 });
