@@ -17,11 +17,11 @@ class MotorcycleController {
   //   return res.status(200).json(carUpdated);
   // }
 
-  // async readOne(req: Request, res: Response<ICar>) {
-  //   const car = await this._service.readOne(req.params.id);
+  async readOne(req: Request, res: Response<IMotorcycle>) {
+    const car = await this._service.readOne(req.params.id);
 
-  //   return res.status(200).json(car);
-  // }
+    return res.status(200).json(car);
+  }
 
   async read(req: Request, res: Response<IMotorcycle[]>) {
     const result = await this._service.read();
