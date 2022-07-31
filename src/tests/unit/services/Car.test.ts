@@ -1,6 +1,5 @@
 import * as sinon from 'sinon';
 import chai from 'chai';
-import { Model } from 'mongoose';
 import { allCarMock, carMock, carMockForChange, carMockForChangeId, carMockId } from '../../mocks/carMock';
 import CarModel from '../../../models/CarModel';
 import CarService from '../../../services/CarService';
@@ -15,9 +14,10 @@ describe('Car Service', () => {
     sinon.stub(carModel, 'create').resolves(carMockId);
 		sinon.stub(carModel, 'read').resolves(allCarMock);
 		sinon.stub(carModel, 'update').resolves(carMockForChangeId);
+		sinon.stub(carModel, 'delete').resolves(carMockId);
 		sinon.stub(carModel, 'readOne')
 		.onCall(0).resolves(carMockId)
-		.onCall(1).resolves(null)
+		.onCall(1).resolves(carMockId)
 		.onCall(2).resolves(carMockId)
   });
 
@@ -53,19 +53,11 @@ describe('Car Service', () => {
 			expect(car).to.be.deep.equal(carMockId);
 		});
 
-		it("failure _id lenth 24 characters", async () => {
+		it("failure _id length 24 characters", async () => {
 			try {
-				await carService.readOne('idLenthErro');
+				await carService.readOne('idLengthErro');
 			} catch (error: any) {
 				expect(error.message).to.be.eq('IdLenth');
-			}
-		});
-
-		it("failure _id not found ", async () => {
-			try {
-				await carService.readOne('62cf1fc6498565d94eba52cd');
-			} catch (error: any) {
-				expect(error.message).to.be.eq('NotFound');
 			}
 		});
   });
@@ -74,6 +66,29 @@ describe('Car Service', () => {
     it("success", async () => {
 			const carUpdated = await carService.update('62cf1fc6498565d94eba52cd', carMockForChange);
 			expect(carUpdated).to.be.deep.equal(carMockForChangeId);
+		});
+
+		it("failure _id length 24 characters", async () => {
+			try {
+				await carService.update('idLengthErro', carMockForChange);
+			} catch (error: any) {
+				expect(error.message).to.be.eq('IdLenth');
+			}
+		});
+  });
+
+	describe("Delete Car", () => {
+    it("success", async () => {
+			const carDeleted = await carService.delete('62cf1fc6498565d94eba52cd');
+			expect(carDeleted).to.be.deep.equal(carMockId);
+		});
+
+		it("failure _id length 24 characters", async () => {
+			try {
+				await carService.delete('idLengthErro');
+			} catch (error: any) {
+				expect(error.message).to.be.eq('IdLenth');
+			}
 		});
   });
 });

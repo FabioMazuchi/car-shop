@@ -8,7 +8,7 @@ class CarController {
   async delete(req: Request, res: Response<ICar | null>) {
     await this._service.delete(req.params.id);
   
-    return res.status(204).end();
+    return res.status(204).json();
   }
 
   async update(req: Request, res: Response<ICar | null>) {
