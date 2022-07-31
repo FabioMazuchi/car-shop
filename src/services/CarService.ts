@@ -10,15 +10,25 @@ class CarService implements IService<ICar> {
     this._car = model;
   }
 
+  async delete(_id: string): Promise<ICar | null> {
+    if (_id.length < 24) throw new Error(ErrorTypes.IdLenth);
+    const car = await this._car.readOne(_id);
+
+    if (!car) throw new Error(ErrorTypes.NotFound);
+    
+    return this._car.delete(_id);
+  }
+
   async update(_id: string, obj: ICar): Promise<ICar | null> {
-    await this.readOne(_id);
+    if (_id.length < 24) throw new Error(ErrorTypes.IdLenth);
+    const car = await this._car.readOne(_id);
+
+    if (!car) throw new Error(ErrorTypes.NotFound);
 
     const parsed = CarZodSchema.safeParse(obj);
     if (!parsed.success) throw parsed.error;
 
-    await this._car.update(_id, obj);
-    const updatedCar = { ...obj, _id };
-    return updatedCar;
+    return this._car.update(_id, obj);
   }
 
   async readOne(_id: string): Promise<ICar> {

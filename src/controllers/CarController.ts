@@ -5,6 +5,12 @@ import { IService } from '../interfaces/IService';
 class CarController {
   constructor(private _service: IService<ICar>) {}
 
+  async delete(req: Request, res: Response<ICar | null>) {
+    await this._service.delete(req.params.id);
+  
+    return res.status(204).end();
+  }
+
   async update(req: Request, res: Response<ICar | null>) {
     const carUpdated = await this._service.update(req.params.id, req.body);
   
