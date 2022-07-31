@@ -57,13 +57,14 @@ describe('13 - Crie uma rota para o endpoint /cars/id, onde é possível atualiz
       .send(carMock.validCar);
 
     const { _id } = res.body;
-
+   
     const result = await request(app)
       .put(`/cars/${_id}`)
       .send(carMock.updatedCar);
-
+     
     const getCar = await request(app)
       .get(`/cars/${_id}`);
+     
     expect(getCar.body).toEqual({ ...carMock.updatedCar, _id });
     expect(result.statusCode).toEqual(200);
   })
